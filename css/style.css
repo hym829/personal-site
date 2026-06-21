@@ -159,6 +159,7 @@ ul {
   color: var(--text-primary);
   font-size: 1.5rem;
   cursor: pointer;
+  padding: 4px;
 }
 
 /* ===== Particles Background ===== */
