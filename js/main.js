@@ -110,3 +110,58 @@ new Typed('#typed', {
   backDelay: 2000,
   loop: true
 });
+
+// ===== Stats Counter Animation =====
+const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+if (statNumbers.length > 0) {
+  const statsObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.getAttribute('data-target'));
+        animateCounter(el, target);
+        statsObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  statNumbers.forEach(el => statsObserver.observe(el));
+}
+
+function animateCounter(el, target) {
+  const duration = 2000;
+  const start = performance.now();
+  const format = (num) => num.toLocaleString();
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    // easeOutExpo
+    const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+    const current = Math.floor(eased * target);
+    el.textContent = format(current) + (target >= 1000 ? '+' : '');
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    } else {
+      el.textContent = format(target) + (target >= 1000 ? '+' : '');
+    }
+  }
+  requestAnimationFrame(update);
+}
+
+// ===== FAQ Accordion =====
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const answer = btn.nextElementSibling;
+    const isOpen = answer.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('active'));
+
+    // Toggle current
+    if (!isOpen) {
+      answer.classList.add('open');
+      btn.classList.add('active');
+    }
+  });
+});
