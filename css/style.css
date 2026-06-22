@@ -475,28 +475,7 @@ section {
   transition: all var(--transition-fast);
 }
 
-.contact-links button.copy-email-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 28px;
-  border: 1px solid var(--border-card);
-  border-radius: 4px;
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  font-family: var(--font-body);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
 .contact-links a:hover {
-  border-color: var(--accent-cyan);
-  color: var(--accent-cyan);
-  box-shadow: var(--glow-cyan);
-}
-
-.contact-links button.copy-email-btn:hover {
   border-color: var(--accent-cyan);
   color: var(--accent-cyan);
   box-shadow: var(--glow-cyan);

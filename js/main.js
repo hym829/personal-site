@@ -148,40 +148,73 @@ function animateCounter(el, target) {
   requestAnimationFrame(update);
 }
 
-// ===== Copy Email to Clipboard =====
-function copyEmail(button) {
-  const email = button.getAttribute('data-email');
+// ===== Copy Email to Clipboard with Toast =====
+function showToast(message) {
+  const existing = document.getElementById('copy-toast');
+  if (existing) existing.remove();
+
+  const toast = document.createElement('div');
+  toast.id = 'copy-toast';
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    top: 80px;
+    right: 24px;
+    z-index: 10000;
+    padding: 12px 24px;
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 6px;
+    color: #00d4ff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+    animation: toast-in 0.3s ease forwards;
+    pointer-events: none;
+  `;
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateX(20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes toast-out {
+      from { opacity: 1; transform: translateX(0); }
+      to { opacity: 0; transform: translateX(20px); }
+    }
+  `;
+  document.head.appendChild(style);
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'toast-out 0.3s ease forwards';
+    setTimeout(() => { toast.remove(); style.remove(); }, 300);
+  }, 2000);
+}
+
+function copyEmail(email) {
   navigator.clipboard.writeText(email).then(() => {
-    const originalHTML = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-check"></i> 已复制!';
-    button.style.borderColor = 'var(--accent-cyan)';
-    button.style.color = 'var(--accent-cyan)';
-    setTimeout(() => {
-      button.innerHTML = originalHTML;
-      button.style.borderColor = '';
-      button.style.color = '';
-    }, 2000);
+    showToast('邮箱已复制到剪贴板 ✓');
   }).catch(() => {
-    // Fallback for older browsers
     const ta = document.createElement('textarea');
     ta.value = email;
     document.body.appendChild(ta);
     ta.select();
     document.execCommand('copy');
     document.body.removeChild(ta);
+    showToast('邮箱已复制到剪贴板 ✓');
   });
 }
 
-document.querySelectorAll('.copy-email').forEach(btn => {
-  btn.style.cursor = 'pointer';
-  btn.style.background = 'transparent';
-  btn.style.border = 'none';
-  btn.addEventListener('click', () => copyEmail(btn));
+document.querySelectorAll('a.contact-link[data-copy-email], a.social-link[data-copy-email]').forEach(link => {
+  link.addEventListener('click', () => {
+    copyEmail(link.getAttribute('data-copy-email'));
+  });
 });
 
-document.querySelectorAll('.copy-email-btn').forEach(btn => {
-  btn.addEventListener('click', () => copyEmail(btn));
-});
+// ===== FAQ Accordion =====
 document.querySelectorAll('.faq-question').forEach(btn => {
   btn.addEventListener('click', () => {
     const answer = btn.nextElementSibling;
