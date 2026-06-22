@@ -209,7 +209,8 @@ function copyEmail(email) {
 }
 
 document.querySelectorAll('a.contact-link[data-copy-email], a.social-link[data-copy-email]').forEach(link => {
-  link.addEventListener('click', () => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
     copyEmail(link.getAttribute('data-copy-email'));
   });
 });
