@@ -148,7 +148,40 @@ function animateCounter(el, target) {
   requestAnimationFrame(update);
 }
 
-// ===== FAQ Accordion =====
+// ===== Copy Email to Clipboard =====
+function copyEmail(button) {
+  const email = button.getAttribute('data-email');
+  navigator.clipboard.writeText(email).then(() => {
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> 已复制!';
+    button.style.borderColor = 'var(--accent-cyan)';
+    button.style.color = 'var(--accent-cyan)';
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+      button.style.borderColor = '';
+      button.style.color = '';
+    }, 2000);
+  }).catch(() => {
+    // Fallback for older browsers
+    const ta = document.createElement('textarea');
+    ta.value = email;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+
+document.querySelectorAll('.copy-email').forEach(btn => {
+  btn.style.cursor = 'pointer';
+  btn.style.background = 'transparent';
+  btn.style.border = 'none';
+  btn.addEventListener('click', () => copyEmail(btn));
+});
+
+document.querySelectorAll('.copy-email-btn').forEach(btn => {
+  btn.addEventListener('click', () => copyEmail(btn));
+});
 document.querySelectorAll('.faq-question').forEach(btn => {
   btn.addEventListener('click', () => {
     const answer = btn.nextElementSibling;
